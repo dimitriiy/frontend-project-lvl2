@@ -4,9 +4,8 @@
   "description": "[![Actions Status](https://github.com/dimitriiy/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/dimitriiy/frontend-project-lvl2/actions)",
   "main": "./src/gendiff.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx -n --experimental-vm-modules jest",
     "lint": "eslint --fix --ext .js ."
-
   },
   "bin": {
     "gendiff": "bin/gendiff.js"
@@ -27,8 +26,16 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.14.7",
+    "babel-jest": "^27.0.5",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.4"
+    "eslint-plugin-import": "^2.23.4",
+    "jest": "^27.0.5"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   }
 }
