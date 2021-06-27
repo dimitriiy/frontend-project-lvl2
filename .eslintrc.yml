@@ -1,6 +1,7 @@
 env:
   node: true
   es2020: true
+  jest: true
 
 extends:
   - 'airbnb-base'
@@ -13,3 +14,5 @@ rules:
   no-console: 0
   import/extensions: 0
   import/prefer-default-export: 0
+
+
