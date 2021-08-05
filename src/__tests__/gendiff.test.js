@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url'; // the node package 'url'
 import gendiff from '../gendiff.js';
 
@@ -13,7 +12,7 @@ describe('gendiff', () => {
     const file1 = getFixturePath('file1.json');
     const file2 = getFixturePath('file2.json');
 
-    console.log(gendiff(file1, file2))
+    console.log(gendiff(file1, file2));
     expect(gendiff(file1, file2)).toEqual(`{
   - follow: false
     host: hexlet.io
@@ -23,26 +22,25 @@ describe('gendiff', () => {
   + verbose: true
 }`);
   });
-//     it('yml', () => {
-//       const file1 = getFixturePath('file1.yml');
-//       const file2 = getFixturePath('file2.yml');
-//
-//       expect(gendiff(file1, file2)).toEqual(`{
-//   + follow: false
-//     host: hexlet.io
-//   + proxy: 123.234.53.22
-//   - timeout: 50
-//   + timeout: 20
-//   - verbose: true
-// }`);
-//     });
+  //     it('yml', () => {
+  //       const file1 = getFixturePath('file1.yml');
+  //       const file2 = getFixturePath('file2.yml');
+  //
+  //       expect(gendiff(file1, file2)).toEqual(`{
+  //   + follow: false
+  //     host: hexlet.io
+  //   + proxy: 123.234.53.22
+  //   - timeout: 50
+  //   + timeout: 20
+  //   - verbose: true
+  // }`);
+  //     });
 
-  it("nested",() => {
-
+  it('nested', () => {
     const file1 = getFixturePath('file1.nested.json');
     const file2 = getFixturePath('file2.nested.json');
 
-    expect(gendiff(file1,file2)).toEqual(`{
+    expect(gendiff(file1, file2)).toEqual(`{
     common: {
       + follow: false
         setting1: Value 1
@@ -85,6 +83,6 @@ describe('gendiff', () => {
         }
         fee: 100500
     }
-}`)
-  })
+}`);
+  });
 });
