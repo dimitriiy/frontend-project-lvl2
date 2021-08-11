@@ -2,16 +2,15 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import path from 'path';
 import fs from 'fs';
+import { formatterFactory } from './formatters/index.js';
 
-const STATUS = {
+export const STATUS = {
   CHANGED: 'CHANGED',
   NOT_CHANGED: 'NOT_CHANGE',
   ADDED: 'ADDED',
   REMOVED: 'REMOVED',
-  HAS_CHILDREN: 'HAS_CHILDREN',
+  COMPLEX: 'COMPLEX',
 };
-
-const LEN_INTEND = 4;
 
 const parser = (filePath) => {
   const file = fs.readFileSync(filePath, 'utf8');
@@ -51,7 +50,7 @@ const getASTDiff = (obj1, obj2) => {
     if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
       diffTree.push({
         key,
-        status: STATUS.HAS_CHILDREN,
+        status: STATUS.COMPLEX,
         value: getASTDiff(obj1[key], obj2[key]),
       });
       return;
@@ -76,68 +75,12 @@ const getASTDiff = (obj1, obj2) => {
   return diffTree;
 };
 
-const printObject = (obj, offset = LEN_INTEND) => {
-  const keys = _.keys(obj);
-  const offsetString = ' '.repeat(offset);
-  const endOffset = ' '.repeat(offset - LEN_INTEND);
-  let result = '';
-
-  keys.forEach((key) => {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      result += `${offsetString}${key}: ${printObject(obj[key], offset + LEN_INTEND)}\n`;
-    } else {
-      result += `${offsetString}${key}: ${obj[key]}\n`;
-    }
-  });
-
-  return `{\n${result}${endOffset}}`;
-};
-
-const printRow = (value, offset = 0) => {
-  if (typeof value === 'object' && value !== null) {
-    return printObject(value, offset);
-  }
-
-  return value;
-};
-const stylish = (tree, offset = LEN_INTEND) => {
-  let stringifyObject = '';
-  const baseIntend = ' '.repeat(offset);
-  const diffIntend = ' '.repeat(offset - 2);
-  const closeIntend = ' '.repeat(offset - LEN_INTEND);
-
-  tree.forEach((item) => {
-    if (item.status === STATUS.HAS_CHILDREN) {
-      stringifyObject += `${baseIntend}${item.key}: ${stylish(item.value, offset + LEN_INTEND)}\n`;
-    }
-
-    if (item.status === STATUS.NOT_CHANGED) {
-      stringifyObject += `${baseIntend}${item.key}: ${item.value}\n`;
-    }
-
-    if (item.status === STATUS.CHANGED) {
-      stringifyObject += `${diffIntend}- ${item.key}: ${printRow(item.oldValue, offset + LEN_INTEND)}\n`;
-      stringifyObject += `${diffIntend}+ ${item.key}: ${printRow(item.value, offset + LEN_INTEND)}\n`;
-    }
-
-    if (item.status === STATUS.ADDED) {
-      stringifyObject += `${diffIntend}+ ${item.key}: ${printRow(item.value, offset + LEN_INTEND)}\n`;
-    }
-
-    if (item.status === STATUS.REMOVED) {
-      stringifyObject += `${diffIntend}- ${item.key}: ${printRow(item.value, offset + LEN_INTEND)}\n`;
-    }
-  });
-
-  return `{\n${stringifyObject}${closeIntend}}`;
-};
-
-const gendiff = (path1, path2) => {
+const gendiff = (path1, path2, { format }) => {
   const [obj1, obj2] = [path1, path2].map(parser);
-
+  const formatter = formatterFactory(format);
   const diffTree = getASTDiff(obj1, obj2);
 
-  return stylish(diffTree);
+  return formatter(diffTree);
 };
 
 export default gendiff;
