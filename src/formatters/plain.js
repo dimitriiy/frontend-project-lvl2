@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS } from '../gendiff.js';
+import { STATUS } from '../consts.js';
 
 const formatValue = (value) => {
   if (_.isObject(value)) {
@@ -13,7 +13,7 @@ const formatValue = (value) => {
 };
 
 export const plain = (tree) => {
-  const traverse = (tree, path = []) => tree.flatMap((el) => {
+  const traverse = (astTree, path = []) => astTree.flatMap((el) => {
     const currentPath = [...path, el.key].join('.');
 
     if (el.status === STATUS.COMPLEX) {

@@ -3,14 +3,7 @@ import yaml from 'js-yaml';
 import path from 'path';
 import fs from 'fs';
 import { formatterFactory } from './formatters/index.js';
-
-export const STATUS = {
-  CHANGED: 'CHANGED',
-  NOT_CHANGED: 'NOT_CHANGE',
-  ADDED: 'ADDED',
-  REMOVED: 'REMOVED',
-  COMPLEX: 'COMPLEX',
-};
+import { STATUS } from './consts.js';
 
 const parser = (filePath) => {
   const file = fs.readFileSync(filePath, 'utf8');

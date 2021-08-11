@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS } from '../gendiff.js';
+import { STATUS } from '../consts';
 
 const LEN_INDENT = 4;
 
