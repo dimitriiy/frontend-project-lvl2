@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS } from '../consts';
+import { STATUS } from '../consts.js';
 
 const LEN_INDENT = 4;
 

@@ -12,7 +12,7 @@ const formatValue = (value) => {
   return value;
 };
 
-export const plain = (tree) => {
+export const toPlain = (tree) => {
   const traverse = (astTree, path = []) => astTree.flatMap((el) => {
     const currentPath = [...path, el.key].join('.');
 

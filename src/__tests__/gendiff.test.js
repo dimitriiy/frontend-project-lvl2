@@ -101,4 +101,12 @@ Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]`);
   });
+
+  it('json formatter', () => {
+    const file1 = getFixturePath('file1.nested.json');
+    const file2 = getFixturePath('file2.nested.json');
+    const result = '[{"key":"common","status":"COMPLEX","value":[{"key":"follow","status":"ADDED","value":false},{"key":"setting1","status":"NOT_CHANGE","value":"Value 1"},{"key":"setting2","status":"REMOVED","value":200},{"key":"setting3","status":"CHANGED","oldValue":true,"value":null},{"key":"setting4","status":"ADDED","value":"blah blah"},{"key":"setting5","status":"ADDED","value":{"key5":"value5"}},{"key":"setting6","status":"COMPLEX","value":[{"key":"doge","status":"COMPLEX","value":[{"key":"wow","status":"CHANGED","oldValue":"","value":"so much"}]},{"key":"key","status":"NOT_CHANGE","value":"value"},{"key":"ops","status":"ADDED","value":"vops"}]}]},{"key":"group1","status":"COMPLEX","value":[{"key":"baz","status":"CHANGED","oldValue":"bas","value":"bars"},{"key":"foo","status":"NOT_CHANGE","value":"bar"},{"key":"nest","status":"CHANGED","oldValue":{"key":"value"},"value":"str"}]},{"key":"group2","status":"REMOVED","value":{"abc":12345,"deep":{"id":45}}},{"key":"group3","status":"ADDED","value":{"deep":{"id":{"number":45}},"fee":100500}}]';
+
+    expect(gendiff(file1, file2, { format: 'json' })).toEqual(result);
+  });
 });
