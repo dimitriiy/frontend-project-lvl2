@@ -68,8 +68,8 @@ const getASTDiff = (obj1, obj2) => {
   return diffTree;
 };
 
-const gendiff = (path1, path2, optionalArguments ) => {
-  const format = (typeof optionalArguments === "object" ? optionalArguments.format :optionalArguments) || "stylish"
+const gendiff = (path1, path2, optionalArguments) => {
+  const format = (typeof optionalArguments === 'object' ? optionalArguments.format : optionalArguments) || 'stylish';
   // const format = optionalArguments.format || 'stylish';
   const [obj1, obj2] = [path1, path2].map(parser);
   const formatter = formatterFactory(format);
