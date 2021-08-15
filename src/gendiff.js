@@ -75,7 +75,6 @@ const gendiff = (path1, path2, optionalArguments) => {
   const formatter = formatterFactory(format);
   const diffTree = getASTDiff(obj1, obj2);
 
-  console.log(formatter(diffTree));
   return formatter(diffTree);
 };
 

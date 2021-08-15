@@ -7,7 +7,6 @@ const formatterMap = {
 };
 
 export const formatterFactory = (name) => {
-  console.log({ name });
   if (!formatterMap[name]) {
     throw new Error(`${name} formatter doesn't exist.`);
   }
