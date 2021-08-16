@@ -2,7 +2,7 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import path from 'path';
 import fs from 'fs';
-import { formatterFactory } from './formatters/index.js';
+import formatterFactory from './formatters/index.js';
 import { STATUS } from './consts.js';
 
 const parser = (filePath) => {

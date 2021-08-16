@@ -26,7 +26,7 @@ const printRow = (value, offset = 0) => {
   return value;
 };
 
-export const stylish = (tree, offset = LEN_INDENT) => {
+const stylish = (tree, offset = LEN_INDENT) => {
   const baseIntend = ' '.repeat(offset);
   const diffIntend = ' '.repeat(offset - 2);
   const closeIntend = ' '.repeat(offset - LEN_INDENT);
@@ -57,3 +57,5 @@ export const stylish = (tree, offset = LEN_INDENT) => {
 
   return `{\n${rows}${closeIntend}}`;
 };
+
+export default stylish;

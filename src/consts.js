@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 export const STATUS = {
   CHANGED: 'CHANGED',
   NOT_CHANGED: 'NOT_CHANGE',
