@@ -7,17 +7,15 @@ const printObject = (obj, offset = LEN_INDENT) => {
   const keys = _.keys(obj);
   const offsetString = ' '.repeat(offset);
   const endOffset = ' '.repeat(offset - LEN_INDENT);
-  let result = '';
 
-  keys.forEach((key) => {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      result += `${offsetString}${key}: ${printObject(obj[key], offset + LEN_INDENT)}\n`;
-    } else {
-      result += `${offsetString}${key}: ${obj[key]}\n`;
+  const strs = keys.map((key) => {
+    if (_.isObject(obj[key])) {
+      return `${offsetString}${key}: ${printObject(obj[key], offset + LEN_INDENT)}\n`;
     }
-  });
+    return `${offsetString}${key}: ${obj[key]}\n`;
+  }).join('');
 
-  return `{\n${result}${endOffset}}`;
+  return `{\n${strs}${endOffset}}`;
 };
 
 const printRow = (value, offset = 0) => {

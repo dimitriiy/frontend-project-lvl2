@@ -18,51 +18,45 @@ const parser = (filePath) => {
 const getASTDiff = (obj1, obj2) => {
   const uniqKeys = _.union(_.keys(obj1), _.keys(obj2));
   const sortedKeys = _.sortBy(uniqKeys);
-  const diffTree = [];
 
-  sortedKeys.forEach((key) => {
+  const diffTree = sortedKeys.map((key) => {
     if (!_.has(obj1, key) && _.has(obj2, key)) {
-      diffTree.push({
+      return {
         key,
         status: STATUS.ADDED,
         value: obj2[key],
-      });
-
-      return;
+      };
     }
 
     if (_.has(obj1, key) && !_.has(obj2, key)) {
-      diffTree.push({
+      return {
         key,
         status: STATUS.REMOVED,
         value: obj1[key],
-      });
-      return;
+      };
     }
 
     if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      diffTree.push({
+      return {
         key,
         status: STATUS.COMPLEX,
         value: getASTDiff(obj1[key], obj2[key]),
-      });
-      return;
+      };
     }
 
     if (obj1[key] === obj2[key]) {
-      diffTree.push({
+      return {
         key,
         status: STATUS.NOT_CHANGED,
         value: obj1[key],
-      });
-    } else {
-      diffTree.push({
-        key,
-        status: STATUS.CHANGED,
-        oldValue: obj1[key],
-        value: obj2[key],
-      });
+      };
     }
+    return {
+      key,
+      status: STATUS.CHANGED,
+      oldValue: obj1[key],
+      value: obj2[key],
+    };
   });
 
   return diffTree;
