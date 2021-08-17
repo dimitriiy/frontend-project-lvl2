@@ -8,11 +8,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
+/* eslint-disable fp/no-let */
 let result1;
+/* eslint-disable fp/no-let */
 let result2;
 
 beforeAll(() => {
+  /* eslint-disable fp/no-mutation */
   result1 = fs.readFileSync(getFixturePath('resultForStylishFormat.txt'), 'utf-8').trim();
+  /* eslint-disable fp/no-mutation */
   result2 = fs.readFileSync(getFixturePath('resultForPlainFormat.txt'), 'utf-8').trim();
 });
 
