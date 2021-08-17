@@ -20,7 +20,7 @@ const gendiff = (filePath1, filePath2, optionalArguments) => {
   const formatter = formatterFactory(format);
   const diffTree = generateASTDiff(obj1, obj2);
 
-  // console.log(formatter(diffTree));
+  console.log(formatter(diffTree));
   return formatter(diffTree);
 };
 
