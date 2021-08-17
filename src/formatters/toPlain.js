@@ -13,26 +13,23 @@ const formatValue = (value) => {
 };
 
 const toPlain = (tree) => {
-  const traverse = (astTree, path = []) => astTree.flatMap((el) => {
-    const currentPath = [...path, el.key].join('.');
+  const traverse = (astTree, path = []) => astTree.flatMap((node) => {
+    const currentPath = [...path, node.key].join('.');
 
-    if (el.status === STATUS.COMPLEX) {
-      return traverse(el.value, [...path, el.key]);
+    if (node.status === STATUS.HAS_CHILDREN) {
+      return traverse(node.value, [...path, node.key]);
     }
 
-    if (el.status === STATUS.CHANGED) {
-      const str = `Property '${currentPath}' was updated. From ${formatValue(el.oldValue)} to ${formatValue(el.value)}`;
-      return str;
+    if (node.status === STATUS.CHANGED) {
+      return `Property '${currentPath}' was updated. From ${formatValue(node.prevValue)} to ${formatValue(node.value)}`;
     }
 
-    if (el.status === STATUS.ADDED) {
-      const str = `Property '${currentPath}' was added with value: ${formatValue(el.value)}`;
-      return str;
+    if (node.status === STATUS.ADDED) {
+      return `Property '${currentPath}' was added with value: ${formatValue(node.value)}`;
     }
 
-    if (el.status === STATUS.REMOVED) {
-      const str = `Property '${(currentPath)}' was removed`;
-      return str;
+    if (node.status === STATUS.REMOVED) {
+      return `Property '${(currentPath)}' was removed`;
     }
 
     return [];

@@ -3,59 +3,64 @@ import { STATUS } from '../consts.js';
 
 const LEN_INDENT = 4;
 
-const printObject = (obj, offset = LEN_INDENT) => {
+const stringifyObject = (obj, offset = LEN_INDENT) => {
   const keys = _.keys(obj);
-  const offsetString = ' '.repeat(offset);
+  const startIndent = ' '.repeat(offset);
   const endOffset = ' '.repeat(offset - LEN_INDENT);
 
-  const strs = keys.map((key) => {
+  const formattingObjectAsString = keys.map((key) => {
     if (_.isObject(obj[key])) {
-      return `${offsetString}${key}: ${printObject(obj[key], offset + LEN_INDENT)}\n`;
+      return `${startIndent}${key}: ${stringifyObject(obj[key], offset + LEN_INDENT)}\n`;
     }
-    return `${offsetString}${key}: ${obj[key]}\n`;
+    return `${startIndent}${key}: ${obj[key]}\n`;
   }).join('');
 
-  return `{\n${strs}${endOffset}}`;
+  return `{\n${formattingObjectAsString}${endOffset}}`;
 };
 
-const printRow = (value, offset = 0) => {
+const stringifyRow = (value, offset = 0) => {
   if (_.isObject(value)) {
-    return printObject(value, offset);
+    return stringifyObject(value, offset);
   }
 
   return value;
 };
 
-const stylish = (tree, offset = LEN_INDENT) => {
-  const baseIntend = ' '.repeat(offset);
-  const diffIntend = ' '.repeat(offset - 2);
-  const closeIntend = ' '.repeat(offset - LEN_INDENT);
+const stylish = (treeData) => {
+  const stylizeData = (astTree, offset = LEN_INDENT) => {
+    const baseIntend = ' '.repeat(offset);
+    const diffIntend = ' '.repeat(offset - 2);
+    const closeIntend = ' '.repeat(offset - LEN_INDENT);
 
-  const rows = tree.flatMap((item) => {
-    if (item.status === STATUS.COMPLEX) {
-      return `${baseIntend}${item.key}: ${stylish(item.value, offset + LEN_INDENT)}\n`;
-    }
+    const formattingBody = astTree.flatMap((node) => {
+      if (node.status === STATUS.HAS_CHILDREN) {
+        return `${baseIntend}${node.key}: ${stylizeData(node.value, offset + LEN_INDENT)}\n`;
+      }
 
-    if (item.status === STATUS.NOT_CHANGED) {
-      return `${baseIntend}${item.key}: ${item.value}\n`;
-    }
+      if (node.status === STATUS.NOT_CHANGED) {
+        return `${baseIntend}${node.key}: ${node.value}\n`;
+      }
 
-    if (item.status === STATUS.CHANGED) {
-      return [`${diffIntend}- ${item.key}: ${printRow(item.oldValue, offset + LEN_INDENT)}\n`, `${diffIntend}+ ${item.key}: ${printRow(item.value, offset + LEN_INDENT)}\n`];
-    }
+      if (node.status === STATUS.CHANGED) {
+        return [`${diffIntend}- ${node.key}: ${stringifyRow(node.prevValue, offset + LEN_INDENT)}\n`,
+          `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`];
+      }
 
-    if (item.status === STATUS.ADDED) {
-      return `${diffIntend}+ ${item.key}: ${printRow(item.value, offset + LEN_INDENT)}\n`;
-    }
+      if (node.status === STATUS.ADDED) {
+        return `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`;
+      }
 
-    if (item.status === STATUS.REMOVED) {
-      return `${diffIntend}- ${item.key}: ${printRow(item.value, offset + LEN_INDENT)}\n`;
-    }
+      if (node.status === STATUS.REMOVED) {
+        return `${diffIntend}- ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`;
+      }
 
-    return [];
-  }).join('');
+      return [];
+    }).join('');
 
-  return `{\n${rows}${closeIntend}}`;
+    return `{\n${formattingBody}${closeIntend}}`;
+  };
+
+  return stylizeData(treeData);
 };
 
 export default stylish;

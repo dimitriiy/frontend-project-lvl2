@@ -1,11 +1,10 @@
-import _ from 'lodash';
 import yaml from 'js-yaml';
 import path from 'path';
 import fs from 'fs';
 import formatterFactory from './formatters/index.js';
-import { STATUS } from './consts.js';
+import generateASTDiff from './generateASTDiff.js';
 
-const parser = (filePath) => {
+const parse = (filePath) => {
   const file = fs.readFileSync(filePath, 'utf8');
 
   if (['.yml', '.yaml'].includes(path.extname(filePath))) {
@@ -15,61 +14,13 @@ const parser = (filePath) => {
   return JSON.parse(file);
 };
 
-const getASTDiff = (obj1, obj2) => {
-  const uniqKeys = _.union(_.keys(obj1), _.keys(obj2));
-  const sortedKeys = _.sortBy(uniqKeys);
-
-  const diffTree = sortedKeys.map((key) => {
-    if (!_.has(obj1, key) && _.has(obj2, key)) {
-      return {
-        key,
-        status: STATUS.ADDED,
-        value: obj2[key],
-      };
-    }
-
-    if (_.has(obj1, key) && !_.has(obj2, key)) {
-      return {
-        key,
-        status: STATUS.REMOVED,
-        value: obj1[key],
-      };
-    }
-
-    if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-      return {
-        key,
-        status: STATUS.COMPLEX,
-        value: getASTDiff(obj1[key], obj2[key]),
-      };
-    }
-
-    if (obj1[key] === obj2[key]) {
-      return {
-        key,
-        status: STATUS.NOT_CHANGED,
-        value: obj1[key],
-      };
-    }
-    return {
-      key,
-      status: STATUS.CHANGED,
-      oldValue: obj1[key],
-      value: obj2[key],
-    };
-  });
-
-  return diffTree;
-};
-
-const gendiff = (path1, path2, optionalArguments) => {
+const gendiff = (filePath1, filePath2, optionalArguments) => {
   const format = (typeof optionalArguments === 'object' ? optionalArguments.format : optionalArguments) || 'stylish';
-  // const format = optionalArguments.format || 'stylish';
-  const [obj1, obj2] = [path1, path2].map(parser);
+  const [obj1, obj2] = [filePath1, filePath2].map(parse);
   const formatter = formatterFactory(format);
-  const diffTree = getASTDiff(obj1, obj2);
+  const diffTree = generateASTDiff(obj1, obj2);
 
-  console.log(formatter(diffTree));
+  // console.log(formatter(diffTree));
   return formatter(diffTree);
 };
 
