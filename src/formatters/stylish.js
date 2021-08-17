@@ -4,16 +4,12 @@ import { STATUS } from '../consts.js';
 const LEN_INDENT = 4;
 
 const stringifyObject = (obj, offset = LEN_INDENT) => {
-  const keys = _.keys(obj);
+  if (!_.isObject(obj)) {
+    return obj;
+  }
   const startIndent = ' '.repeat(offset);
   const endOffset = ' '.repeat(offset - LEN_INDENT);
-
-  const formattingObjectAsString = keys.map((key) => {
-    if (_.isObject(obj[key])) {
-      return `${startIndent}${key}: ${stringifyObject(obj[key], offset + LEN_INDENT)}\n`;
-    }
-    return `${startIndent}${key}: ${obj[key]}\n`;
-  }).join('');
+  const formattingObjectAsString = Object.entries(obj).map(([key, value]) => `${startIndent}${key}: ${stringifyObject(value, offset + LEN_INDENT)}\n`).join('');
 
   return `{\n${formattingObjectAsString}${endOffset}}`;
 };
