@@ -30,30 +30,34 @@ const stylish = (treeData) => {
 
     const formattingBody = astTree.flatMap((node) => {
       if (node.status === STATUS.HAS_CHILDREN) {
-        return `${baseIntend}${node.key}: ${stylizeData(node.value, offset + LEN_INDENT)}\n`;
+        return `${baseIntend}${node.key}: ${stylizeData(node.value, offset + LEN_INDENT)}`;
       }
 
       if (node.status === STATUS.NOT_CHANGED) {
-        return `${baseIntend}${node.key}: ${node.value}\n`;
+        return `${baseIntend}${node.key}: ${node.value}`;
       }
 
       if (node.status === STATUS.CHANGED) {
-        return [`${diffIntend}- ${node.key}: ${stringifyRow(node.prevValue, offset + LEN_INDENT)}\n`,
-          `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`];
+        return [`${diffIntend}- ${node.key}: ${stringifyRow(node.prevValue, offset + LEN_INDENT)}`,
+          `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`];
       }
 
       if (node.status === STATUS.ADDED) {
-        return `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`;
+        return `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`;
       }
 
       if (node.status === STATUS.REMOVED) {
-        return `${diffIntend}- ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}\n`;
+        return `${diffIntend}- ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`;
       }
 
       return [];
-    }).join('');
+    });
 
-    return `{\n${formattingBody}${closeIntend}}`;
+    return [
+      '{',
+      ...formattingBody,
+      `${closeIntend}}`,
+    ].join('\n');
   };
 
   return stylizeData(treeData);
