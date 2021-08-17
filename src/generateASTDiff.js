@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS } from './consts';
+import { STATUS } from './consts.js';
 
 const generateASTDiff = (obj1, obj2) => {
   const uniqKeys = _.union(_.keys(obj1), _.keys(obj2));
