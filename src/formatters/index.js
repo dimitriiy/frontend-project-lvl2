@@ -1,17 +1,16 @@
 import toPlain from './toPlain.js';
 import stylish from './stylish.js';
-import toJSon from './json.js';
 
 const formatterMap = {
-  stylish, plain: toPlain, json: toJSon,
+  stylish, plain: toPlain, json: JSON.stringify,
 };
 
-const formatterFactory = (name) => {
+const formatterFactory = (astTree, name) => {
   if (!formatterMap[name]) {
     throw new Error(`${name} formatter doesn't exist.`);
   }
 
-  return formatterMap[name];
+  return formatterMap[name](astTree);
 };
 
 export default formatterFactory;

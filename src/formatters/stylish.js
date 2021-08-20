@@ -3,23 +3,15 @@ import { STATUS } from '../consts.js';
 
 const LEN_INDENT = 4;
 
-const stringifyObject = (obj, offset = LEN_INDENT) => {
+const stringify = (obj, offset = LEN_INDENT) => {
   if (!_.isObject(obj)) {
     return obj;
   }
   const startIndent = ' '.repeat(offset);
   const endOffset = ' '.repeat(offset - LEN_INDENT);
-  const formattingObjectAsString = Object.entries(obj).map(([key, value]) => `${startIndent}${key}: ${stringifyObject(value, offset + LEN_INDENT)}\n`).join('');
+  const formattingObjectAsString = Object.entries(obj).map(([key, value]) => `${startIndent}${key}: ${stringify(value, offset + LEN_INDENT)}\n`).join('');
 
   return `{\n${formattingObjectAsString}${endOffset}}`;
-};
-
-const stringifyRow = (value, offset = 0) => {
-  if (_.isObject(value)) {
-    return stringifyObject(value, offset);
-  }
-
-  return value;
 };
 
 const stylish = (treeData) => {
@@ -38,16 +30,16 @@ const stylish = (treeData) => {
       }
 
       if (node.status === STATUS.CHANGED) {
-        return [`${diffIntend}- ${node.key}: ${stringifyRow(node.prevValue, offset + LEN_INDENT)}`,
-          `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`];
+        return [`${diffIntend}- ${node.key}: ${stringify(node.prevValue, offset + LEN_INDENT)}`,
+          `${diffIntend}+ ${node.key}: ${stringify(node.value, offset + LEN_INDENT)}`];
       }
 
       if (node.status === STATUS.ADDED) {
-        return `${diffIntend}+ ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`;
+        return `${diffIntend}+ ${node.key}: ${stringify(node.value, offset + LEN_INDENT)}`;
       }
 
       if (node.status === STATUS.REMOVED) {
-        return `${diffIntend}- ${node.key}: ${stringifyRow(node.value, offset + LEN_INDENT)}`;
+        return `${diffIntend}- ${node.key}: ${stringify(node.value, offset + LEN_INDENT)}`;
       }
 
       return [];

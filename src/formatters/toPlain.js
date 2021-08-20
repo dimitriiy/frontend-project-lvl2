@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { STATUS } from '../consts.js';
 
-const formatValue = (value) => {
+const stringify = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
@@ -9,7 +9,7 @@ const formatValue = (value) => {
     return `'${value}'`;
   }
 
-  return value;
+  return `${value}`;
 };
 
 const toPlain = (tree) => {
@@ -21,11 +21,11 @@ const toPlain = (tree) => {
     }
 
     if (node.status === STATUS.CHANGED) {
-      return `Property '${currentPath}' was updated. From ${formatValue(node.prevValue)} to ${formatValue(node.value)}`;
+      return `Property '${currentPath}' was updated. From ${stringify(node.prevValue)} to ${stringify(node.value)}`;
     }
 
     if (node.status === STATUS.ADDED) {
-      return `Property '${currentPath}' was added with value: ${formatValue(node.value)}`;
+      return `Property '${currentPath}' was added with value: ${stringify(node.value)}`;
     }
 
     if (node.status === STATUS.REMOVED) {

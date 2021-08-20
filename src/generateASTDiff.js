@@ -6,7 +6,7 @@ const generateASTDiff = (obj1, obj2) => {
   const sortedKeys = _.sortBy(uniqKeys);
 
   const diffTree = sortedKeys.map((key) => {
-    if (!_.has(obj1, key) && _.has(obj2, key)) {
+    if (!_.has(obj1, key)) {
       return {
         key,
         status: STATUS.ADDED,
@@ -14,7 +14,7 @@ const generateASTDiff = (obj1, obj2) => {
       };
     }
 
-    if (_.has(obj1, key) && !_.has(obj2, key)) {
+    if (!_.has(obj2, key)) {
       return {
         key,
         status: STATUS.REMOVED,
@@ -22,7 +22,7 @@ const generateASTDiff = (obj1, obj2) => {
       };
     }
 
-    if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
+    if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
       return {
         key,
         status: STATUS.HAS_CHILDREN,
@@ -30,7 +30,7 @@ const generateASTDiff = (obj1, obj2) => {
       };
     }
 
-    if (obj1[key] === obj2[key]) {
+    if (_.isEqual(obj1[key], obj2[key])) {
       return {
         key,
         status: STATUS.NOT_CHANGED,
